@@ -1,9 +1,12 @@
 package cedro_celuch.quizroyale;
 
-import javafx.concurrent.Task;
+import java.io.IOException;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 
 public class GamePanelController {
 
@@ -12,6 +15,7 @@ public class GamePanelController {
     boolean isAnswerPending; 
     boolean isAnswerFinished; 
 
+    
     @FXML
     private Label playerNameLabel;
     @FXML
@@ -59,10 +63,8 @@ public class GamePanelController {
         answerDButton.setText( "D. " + questionPrompt.getAnswerText( PossibleAnswer.ANSWER_D ) );
     }
 
-    private Button getCorrectAnswerButton() {
-        PossibleAnswer correctAnswer = questionPrompt.getCorrectAnswer();
-
-        switch( correctAnswer ) {
+    private Button getButtonFromAnswerVal( PossibleAnswer answer ) {
+        switch( answer ) {
             case ANSWER_A:
                 return answerAButton;
             case ANSWER_B:
@@ -73,6 +75,44 @@ public class GamePanelController {
                 return answerDButton;
             default:
                 return null;
+        }
+    }
+
+    private Button getCorrectAnswerButton() {
+        PossibleAnswer correctAnswer = questionPrompt.getCorrectAnswer();
+        return getButtonFromAnswerVal( correctAnswer );
+    }
+
+    private void goToMainMenu() {
+        try {
+            StackPane mainMenuPane = FXMLLoader.load( getClass().getResource("main-menu.fxml") );
+            QuizRoyaleApplication.mainScene.setRoot( mainMenuPane );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onAnswerButtonClickInternal( PossibleAnswer answer ) {
+        if( !isAnswerPending && !isAnswerFinished ) {
+            Button btn = getButtonFromAnswerVal(answer);
+
+            isAnswerPending = true;
+            isAnswerFinished = false;
+            btn.getStyleClass().add("answer-button-pending");
+
+            new Sleeper(3000, () -> {
+                if( questionPrompt.getCorrectAnswer() == answer ) {
+                    btn.getStyleClass().add("answer-button-correct");
+                    new Sleeper(2000, () -> {
+                        goToMainMenu();
+                    });
+                } else {
+                    btn.getStyleClass().add("answer-button-incorrect");
+                    getCorrectAnswerButton().getStyleClass().add("answer-button-correct");
+                }
+                isAnswerPending = false;
+                isAnswerFinished = true;
+            });
         }
     }
 
@@ -89,137 +129,21 @@ public class GamePanelController {
 
     @FXML
     protected void onAnswerAButtonClick() {
-        if( !isAnswerPending && !isAnswerFinished ) {
-
-            Task<Void> sleeper = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    try {
-                        isAnswerPending = true;
-                        isAnswerFinished = false;
-                        answerAButton.getStyleClass().add("answer-button-pending");
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-                @Override
-                protected void succeeded() {
-                    if( questionPrompt.getCorrectAnswer() == PossibleAnswer.ANSWER_A ) {
-                        answerAButton.getStyleClass().add("answer-button-correct");
-                    } else {
-                        answerAButton.getStyleClass().add("answer-button-incorrect");
-                        getCorrectAnswerButton().getStyleClass().add("answer-button-correct");
-                    }
-                    isAnswerPending = false;
-                    isAnswerFinished = true;
-                }
-            };
-
-            new Thread(sleeper).start();
-        }
+        onAnswerButtonClickInternal( PossibleAnswer.ANSWER_A );
     }
 
     @FXML
-    void onAnswerBButtonClick() {
-        if( !isAnswerPending && !isAnswerFinished ) {
-            
-            Task<Void> sleeper = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    try {
-                        isAnswerPending = true;
-                        isAnswerFinished = false;
-                        answerBButton.getStyleClass().add("answer-button-pending");
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-                @Override
-                protected void succeeded() {
-                    if( questionPrompt.getCorrectAnswer() == PossibleAnswer.ANSWER_B ) {
-                        answerBButton.getStyleClass().add("answer-button-correct");
-                    } else {
-                        answerBButton.getStyleClass().add("answer-button-incorrect");
-                        getCorrectAnswerButton().getStyleClass().add("answer-button-correct");
-                    }
-                    isAnswerPending = false;
-                    isAnswerFinished = true;
-                }
-            };
-
-            new Thread(sleeper).start();
-        }
+    void onAnswerBButtonClick() throws InterruptedException {
+        onAnswerButtonClickInternal( PossibleAnswer.ANSWER_B );
     }
 
     @FXML
     void onAnswerCButtonClick() {
-        if( !isAnswerPending && !isAnswerFinished ) {
-
-            Task<Void> sleeper = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    try {
-                        isAnswerPending = true;
-                        isAnswerFinished = false;
-                        answerCButton.getStyleClass().add("answer-button-pending");
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-                @Override
-                protected void succeeded() {
-                    if( questionPrompt.getCorrectAnswer() == PossibleAnswer.ANSWER_C ) {
-                        answerCButton.getStyleClass().add("answer-button-correct");
-                    } else {
-                        answerCButton.getStyleClass().add("answer-button-incorrect");
-                        getCorrectAnswerButton().getStyleClass().add("answer-button-correct");
-                    }
-                    isAnswerPending = false;
-                    isAnswerFinished = true;
-                }
-            };
-
-            new Thread(sleeper).start();
-        }
+        onAnswerButtonClickInternal( PossibleAnswer.ANSWER_C );
     }
 
     @FXML
     void onAnswerDButtonClick() {
-        if( !isAnswerPending && !isAnswerFinished ) {
-
-            Task<Void> sleeper = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    try {
-                        isAnswerPending = true;
-                        isAnswerFinished = false;
-                        answerDButton.getStyleClass().add("answer-button-pending");
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-                @Override
-                protected void succeeded() {
-                    if( questionPrompt.getCorrectAnswer() == PossibleAnswer.ANSWER_D ) {
-                        answerDButton.getStyleClass().add("answer-button-correct");
-                    } else {
-                        answerDButton.getStyleClass().add("answer-button-incorrect");
-                        getCorrectAnswerButton().getStyleClass().add("answer-button-correct");
-                    }
-                    isAnswerPending = false;
-                    isAnswerFinished = true;
-                }
-            };
-
-            new Thread(sleeper).start();
-        }
+        onAnswerButtonClickInternal( PossibleAnswer.ANSWER_D );
     }
 }

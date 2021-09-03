@@ -17,7 +17,7 @@ public class MainMenuController {
         try {
             StackPane gamePane = FXMLLoader.load( getClass().getResource("game-panel.fxml") );
 
-            mainPane.getChildren().setAll( gamePane );
+            QuizRoyaleApplication.mainScene.setRoot( gamePane );
 
         } catch (IOException e) {
             e.printStackTrace();
