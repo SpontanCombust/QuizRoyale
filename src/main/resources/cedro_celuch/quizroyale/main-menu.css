@@ -1,0 +1,12 @@
+.root {
+    -fx-background-color: linear-gradient( to bottom right, sandybrown, red  );
+}
+.title {
+    -fx-underline: true;
+    -fx-font-weight: bolder;
+    -fx-font-size: 40pt;
+}
+.button {
+    -fx-font-weight: bold;
+    -fx-font-size: 20pt;
+}

@@ -1,0 +1,17 @@
+.question-text {
+    -fx-font-size: 15pt;
+    -fx-text-fill: rgb(255, 200, 0) 
+}
+.button {
+    -fx-font-weight: normal;
+    -fx-font-size: 10pt;
+}
+.answer-button-pending {
+    -fx-background-color: rgb(255,255,0)
+}
+.answer-button-correct {
+    -fx-background-color: rgb(0,255,0)
+}
+.answer-button-incorrect {
+    -fx-background-color: rgb(255,0,0)
+}
